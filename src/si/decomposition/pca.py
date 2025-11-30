@@ -22,12 +22,12 @@ class PCA(Transformer):
         eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
         
         # 3. Infer Principal Components 
-        # Ordenar eigenvalues e eigenvectors de forma decrescente
+        # Sort eigenvalues and eigenvectors in descending order
         sorted_indices = np.argsort(eigenvalues)[::-1]
         sorted_eigenvalues = eigenvalues[sorted_indices]
         sorted_eigenvectors = eigenvectors[:, sorted_indices]
         
-        # Selecionar os primeiros n componentes (transposta para ficar (n_comp, n_feat))
+        # Select the first n components (transpose to be (n_comp, n_feat))
         self.components = sorted_eigenvectors[:, :self.n_components].T
         
         # 4. Infer Explained Variance
@@ -38,7 +38,6 @@ class PCA(Transformer):
     def _transform(self, dataset: Dataset):
         # 1. Centering the data
         centered_data = dataset.X - self.mean
-        
         # 2. Calculate reduced X
         X_reduced = np.dot(centered_data, self.components.T)
         

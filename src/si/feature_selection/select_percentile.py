@@ -17,22 +17,20 @@ class SelectPercentile(Transformer):
         self.p = None
 
     def _fit(self, dataset: Dataset):
-        # Estima F e p para cada feature
+        # Estimate F and p for each feature
         self.F, self.p = self.score_func(dataset)
         return self
 
     def _transform(self, dataset: Dataset):
-        # Calcula o limiar baseado no percentil
+        # Calculate the threshold based on the percentile
         len_features = len(dataset.features)
         k = int(len_features * (self.percentile / 100))
         
-        # Ordena os índices dos F-values em ordem decrescente
+        # Sort the F-value indices in descending order
         idxs = np.argsort(self.F)[::-1]
-        # Seleciona as k melhores features
+        # Select the k best features
         best_idxs = idxs[:k]
-        
-        # Lógica para lidar com empates
-        
+        # Update dataset to keep only the selected features
         dataset.X = dataset.X[:, best_idxs]
         dataset.features = [dataset.features[i] for i in best_idxs]
         

@@ -20,21 +20,21 @@ class KNNRegressor(Model):
         n_samples = dataset.shape()[0]
         
         for i in range(n_samples):
-            # 1. Calcular distâncias 
+            # 1. Calculate distances
             dists = self.distance(dataset.X[i], self.dataset.X)
             
-            # 2. Obter índices dos k vizinhos mais próximos
+            # 2. Get indices of the k nearest neighbors
             k_nearest_neighbors = np.argsort(dists)[:self.k]
             
-            # 3. Obter valores de y correspondentes 
+            # 3. Get corresponding y values
             k_nearest_values = self.dataset.y[k_nearest_neighbors]
             
-            # 4. Calcular a média 
+            # 4. Calculate the mean
             prediction = np.mean(k_nearest_values)
             predictions.append(prediction)
             
         return np.array(predictions)
 
     def _score(self, dataset: Dataset, predictions):
-        # Calcula RMSE 
+        # Calculate RMSE
         return rmse(dataset.y, predictions)
