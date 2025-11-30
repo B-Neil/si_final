@@ -125,6 +125,20 @@ class Dataset:
             "var": self.get_variance()
         }
         return pd.DataFrame.from_dict(data, orient="index", columns=self.features)
+    
+    def dropna(self):
+        """
+        Removes all samples containing at least one null value.
+        """
+        # Verifica se há algum NaN em cada linha (amostra)
+        mask = ~np.isnan(self.X).any(axis=1)
+        
+        # Filtra X e y mantendo apenas as linhas sem NaNs
+        self.X = self.X[mask]
+        if self.y is not None:
+            self.y = self.y[mask]
+        
+        return self 
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
