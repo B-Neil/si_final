@@ -132,8 +132,6 @@ class Dataset:
         """
         # Verifica se há algum NaN em cada linha (amostra)
         mask = ~np.isnan(self.X).any(axis=1)
-        
-        # Filtra X e y mantendo apenas as linhas sem NaNs
         self.X = self.X[mask]
         if self.y is not None:
             self.y = self.y[mask]
@@ -163,7 +161,7 @@ class Dataset:
             
         return self
 
-    # 2.3 Remove by index [cite: 717]
+    # 2.3 Remove by index
     def remove_by_index(self, index):
             """
             Removes a sample by its index.

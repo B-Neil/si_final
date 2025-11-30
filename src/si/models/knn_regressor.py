@@ -2,7 +2,7 @@ import numpy as np
 from si.base.model import Model
 from si.data.dataset import Dataset
 from si.metrics.rmse import rmse
-from si.statistics.euclidean_distance import euclidean_distance # Assume-se que este existe de aulas anteriores
+from si.statistics.euclidean_distance import euclidean_distance
 
 class KNNRegressor(Model):
     def __init__(self, k: int = 5, distance=euclidean_distance):
