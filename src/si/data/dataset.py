@@ -139,6 +139,40 @@ class Dataset:
             self.y = self.y[mask]
         
         return self 
+    
+    # 2.2 Fillna
+    def fillna(self, value):
+        """
+        Replaces all null values with another value or the mean or median.
+        """
+        if isinstance(value, str):
+            if value == 'mean':
+                # Calcula a média de cada coluna ignorando NaNs
+                fill_values = np.nanmean(self.X, axis=0)
+            elif value == 'median':
+                # Calcula a mediana de cada coluna ignorando NaNs
+                fill_values = np.nanmedian(self.X, axis=0)
+            
+            # Itera sobre as colunas para preencher os NaNs
+            inds = np.where(np.isnan(self.X))
+            self.X[inds] = np.take(fill_values, inds[1])
+            
+        else:
+            # Preenche com um valor escalar fixo
+            self.X = np.nan_to_num(self.X, nan=value)
+            
+        return self
+
+    # 2.3 Remove by index [cite: 717]
+    def remove_by_index(self, index):
+            """
+            Removes a sample by its index.
+            """
+            self.X = np.delete(self.X, index, axis=0)
+            if self.y is not None:
+                self.y = np.delete(self.y, index, axis=0)
+                
+            return self
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
