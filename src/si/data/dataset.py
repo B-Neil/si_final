@@ -130,7 +130,7 @@ class Dataset:
         """
         Removes all samples containing at least one null value.
         """
-        # Verifica se há algum NaN em cada linha (amostra)
+        # Check if there are any NaNs in each row (sample)
         mask = ~np.isnan(self.X).any(axis=1)
         self.X = self.X[mask]
         if self.y is not None:
@@ -145,32 +145,32 @@ class Dataset:
         """
         if isinstance(value, str):
             if value == 'mean':
-                # Calcula a média de cada coluna ignorando NaNs
+                # Calculate the mean of each column ignoring NaNs
                 fill_values = np.nanmean(self.X, axis=0)
             elif value == 'median':
-                # Calcula a mediana de cada coluna ignorando NaNs
+                # Calculate the median of each column ignoring NaNs
                 fill_values = np.nanmedian(self.X, axis=0)
             
-            # Itera sobre as colunas para preencher os NaNs
+            # Iterate over columns to fill NaNs
             inds = np.where(np.isnan(self.X))
             self.X[inds] = np.take(fill_values, inds[1])
             
         else:
-            # Preenche com um valor escalar fixo
+            # Fill with a fixed scalar value
             self.X = np.nan_to_num(self.X, nan=value)
             
         return self
 
     # 2.3 Remove by index
     def remove_by_index(self, index):
-            """
-            Removes a sample by its index.
-            """
-            self.X = np.delete(self.X, index, axis=0)
-            if self.y is not None:
-                self.y = np.delete(self.y, index, axis=0)
-                
-            return self
+        """
+        Removes a sample by its index.
+        """
+        self.X = np.delete(self.X, index, axis=0)
+        if self.y is not None:
+            self.y = np.delete(self.y, index, axis=0)
+            
+        return self
 
     @classmethod
     def from_dataframe(cls, df: pd.DataFrame, label: str = None):
