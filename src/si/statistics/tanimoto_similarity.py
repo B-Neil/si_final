@@ -7,22 +7,20 @@ def tanimoto_similarity(x, y):
     x: array-like, shape (n_features,). Single binary sample.
     y: array-like, shape (n_samples, n_features). Multiple binary samples.
     """
-    # Converter para numpy arrays para garantir operações vetoriais
+    # Convert to numpy arrays to ensure vector operations
     x = np.array(x)
     y = np.array(y)
     
-    # Produto escalar (interseção para vetores binários) -> a.b
+    # Dot product (intersection for binary vectors) -> a.b
     xy_dot = np.dot(y, x)
     
-    # Soma dos quadrados (contagem de 1s para binário) -> ||a||^2 e ||b||^2
-    # Para vetores binários x*x é o mesmo que sum(x)
+    # Sum of squares (count of 1s for binary) -> ||a||^2 and ||b||^2
+    # For binary vectors x*x is the same as sum(x)
     x_sum = np.sum(x) # a^2
     y_sum = np.sum(y, axis=1) # b^2
     
-    # Fórmula: (a.b) / (a^2 + b^2 - a.b)
+    # Formula: (a.b) / (a^2 + b^2 - a.b)
     denominator = x_sum + y_sum - xy_dot
-    
-    # Evitar divisão por zero
     similarity = xy_dot / denominator
     
     return similarity
