@@ -19,7 +19,8 @@ class KNNRegressor(Model):
         predictions = []
         n_samples = dataset.shape()[0]
         
-        for i in range(n_samples):
+        for i in range(n_samples): # estudar vem esta parte aqui 
+
             # 1. Calculate distances
             dists = self.distance(dataset.X[i], self.dataset.X)
             

@@ -24,7 +24,7 @@ class SelectPercentile(Transformer):
     def _transform(self, dataset: Dataset):
         # Calculate the threshold based on the percentile
         len_features = len(dataset.features)
-        k = int(len_features * (self.percentile / 100))
+        k = int(len_features * (self.percentile / 100)) # corrigir aqui verificar empatesaqui ----
         
         # Sort the F-value indices in descending order
         idxs = np.argsort(self.F)[::-1]

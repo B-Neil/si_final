@@ -60,14 +60,18 @@ class RandomForestClassifier(Model):
             
         all_tree_preds = np.array(all_tree_preds)
         
-        # 2. Get most common predicted class for each sample (Votação majoritária)
+        # 2. Get most common predicted class for each sample (Votação majoritária)  faco a tranposta, 
         for sample_preds in all_tree_preds.T:
             values, counts = np.unique(sample_preds, return_counts=True)
             most_common = values[np.argmax(counts)]
             predictions.append(most_common)
+    
             
         return np.array(predictions)
 
     def _score(self, dataset: Dataset, predictions):
         # Accuracy
         return np.sum(dataset.y == predictions) / len(dataset.y)
+    
+
+    

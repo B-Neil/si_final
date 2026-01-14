@@ -4,7 +4,7 @@ import copy
 import numpy as np
 
 from si.neural_networks.optimizers import Optimizer
-
+from si.neural_networks.layers import Layer
 
 class Layer(metaclass=ABCMeta):
 
@@ -141,3 +141,98 @@ class DenseLayer(Layer):
             The shape of the output of the layer.
         """
         return (self.n_units,) 
+
+class Dropout(Layer):
+    """
+    A dropout layer.
+    """
+    def __init__(self, probability: float):
+        """
+        Initialize the Dropout layer.
+
+        Parameters
+        ----------
+        probability : float
+            The dropout rate, between 0 and 1. 
+            Represents the probability of a neuron being zeroed out.
+        """
+        super().__init__()
+        self.probability = probability
+        
+        # Attributes to store for backward propagation
+        self.mask = None
+        self.input = None
+        self.output = None
+
+    def forward_propagation(self, input: np.ndarray, training: bool) -> np.ndarray:
+        """
+        Perform forward propagation on the given input.
+
+        Parameters
+        ----------
+        input : np.ndarray
+            The input of the layer.
+        training : bool
+            Whether the layer is in training or inference mode.
+
+        Returns
+        -------
+        output : np.ndarray
+            The output of the layer.
+        """
+        self.input = input
+
+        if training:
+            # 1. Compute scaling factor
+            scaling_factor = 1 / (1 - self.probability)
+            
+            # 2. Compute the mask
+            self.mask = np.random.binomial(1, 1 - self.probability, size=input.shape)
+            
+            # 3. Compute the output
+            self.output = input * self.mask * scaling_factor
+            return self.output
+        
+        else:
+            # In inference mode, we do nothing (the scaling is handled in training)
+            self.output = input
+            return self.output
+
+    def backward_propagation(self, output_error: np.ndarray) -> np.ndarray:
+        """
+        Perform backward propagation on the given output error.
+
+        Parameters
+        ----------
+        output_error : np.ndarray
+            The output error of the layer.
+
+        Returns
+        -------
+        input_error : np.ndarray
+            The input error of the layer.
+        """
+        # The derivative of dropout is simply the mask.
+        return output_error * self.mask
+
+    def output_shape(self) -> tuple:
+        """
+        Returns the output shape of the layer.
+
+        Returns
+        -------
+        output_shape : tuple
+            The output shape of the layer.
+        """
+        return self.input.shape
+
+    def parameters(self) -> int:
+        """
+        Returns the number of parameters of the layer.
+
+        Returns
+        -------
+        parameters : int
+            The number of parameters of the layer.
+        """
+        return 0

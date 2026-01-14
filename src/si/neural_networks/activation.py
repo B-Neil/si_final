@@ -5,7 +5,6 @@ import numpy as np
 
 from si.neural_networks.layers import Layer
 
-
 class ActivationLayer(Layer):
     """
     Base class for activation layers.
@@ -177,3 +176,83 @@ class ReLUActivation(ActivationLayer):
             The derivative of the activation function.
         """
         return np.where(input >= 0, 1, 0)
+
+class TanhActivation(ActivationLayer):
+
+    def activation_function(self, input: np.ndarray)->np.ndarray:
+        """
+        Compute the hyperbolic tangent (tanh) of the input array element-wise.
+
+        Parameters
+        ----------
+        input: np.ndarray
+            - A numpy array of input values.
+
+        Returns
+        ----------
+        numpy.ndarray
+            - A numpy array of the same shape as input with tanh applied element-wise.
+        """
+        
+        return (np.exp(input) - np.exp(-input)) / (np.exp(input) + np.exp(-input))
+
+    def derivative(self, input: np.ndarray)-> np.ndarray:
+        """
+        Compute the derivative of the tanh activation function.
+
+        Parameters
+        ----------
+        input: np.ndarray
+            - A numpy array of input values.
+
+        Returns
+        -------
+        numpy.ndarray
+            - A numpy array of the same shape as input with the derivative applied element-wise.
+        """
+
+        return 1 - self.activation_function(input) ** 2
+    
+
+class SoftmaxActivation(ActivationLayer):
+    """
+    Softmax activation function.
+    """
+    def activation_function(self, input: np.ndarray)->np.ndarray:
+        """
+        Softmax activation function.
+        
+        Parameters
+        ----------
+        input: numpy.ndarray
+            - The input to the layer.
+        
+        Returns
+        -------
+        numpy.ndarray
+            - The output of the layer.
+        """
+
+        # subtract the maximum value for the sample to keep numerical stability and avoid large exponentials
+            # axis = 1 since softmax activation must be applied sample-wise and not across all samples
+            # keepdims = True, to keep the original shape of the input data
+        stable_values = np.exp(input - np.max(input,keepdims=True, axis=1))
+
+        return stable_values / np.sum(stable_values, axis=1, keepdims=True)
+    
+    def derivative(self, input: np.ndarray)->np.ndarray:
+        """
+        Derivative of the softmax activation function.
+        
+        Parameters
+        ----------
+        input: numpy.ndarray
+            - The input to the layer.
+        
+        Returns
+        -------
+        numpy.ndarray
+            - The derivative of the activation function.
+        """
+
+        return self.activation_function(input) * (1 - self.activation_function(input))
